@@ -54,7 +54,7 @@ export default function Login() {
   return (
     <div className='login'>
       <div className="container d-flex align-items-center justify-content-center vh-100">
-        <div className="card" style={{ width: '500px', height: '450px' }}>
+        <div className="card" style={{ width: '500px' }}>
           <div className="card-body my-3 mx-3">
             <h3 className="card-title text-center mb-4"><b>Sign In</b></h3>
             {error && 

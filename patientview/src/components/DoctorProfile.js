@@ -41,6 +41,9 @@ export default function DoctorProfile(props) {
                         <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyrBSyYXA389y5lA1B4YgrOULYKy-sihIloQ&usqp=CAU' alt='/' height={200} />
                     </div>
                 </div>
+                <div className="mx-3 my-1">
+                    <button className='btn btn-info md-3'>Edit Profile</button>
+                </div>
             </div>
             <hr />
             <h2>Appointment List</h2>

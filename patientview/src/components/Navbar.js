@@ -8,11 +8,15 @@ function Navbar(props) {
     const handleLogout = () => {
         localStorage.removeItem('authToken');
 
-        history('/login');
+        history('/login/');
     };
 
     const handleLogin = () => {
-        history('/login');
+        history('/login/');
+    };
+
+    const handleRegister = () => {
+        history('/register/');
     };
 
     return (
@@ -63,14 +67,17 @@ function Navbar(props) {
                         }
                     </div>
                     <div>
-                        {props.userType==='doctor' || props.userType==='patient' || props.userType==='admin'
+                        {props.userType === 'doctor' || props.userType === 'patient' || props.userType === 'admin'
                             ? (
                                 <button className='btn btn-danger mx-3' onClick={handleLogout}>Logout</button>
                             ) : (
-                                <button className='btn btn-success mx-3' onClick={handleLogin}>Login</button>
+                                <div>
+                                    <button className='btn btn-success mx-3' onClick={handleLogin}>Login</button>
+                                    <button className='btn btn-success mx-3' onClick={handleRegister}>Register</button>
+                                </div>
                             )}
-                        
-                        
+
+
                     </div>
                 </div>
             </nav>

@@ -25,4 +25,5 @@ urlpatterns = [
     path('token/', views.obtain_token, name='token_obtain'),
     path('token/verify/', views.verify_token, name='token_verify'),
     path('user/details/', views.user_details, name='user-details'),
+    path('register/', views.registerPatient, name='register-patient'),
 ]

@@ -5,6 +5,7 @@ import {
   Routes,
 } from "react-router-dom";
 import React from 'react';
+import axios from 'axios';
 import PatientView from './components/PatientView';
 import AppointmentDoctor from './components/AppointmentDoctor';
 import DoctorView from './components/DoctorView';
@@ -14,8 +15,26 @@ import AdminUsersList from './components/AdminUsersList';
 import AdminAppointments from './components/AdminAppointments';
 import Login from './components/Login';
 import HomePage from './components/HomePage';
+import RegisterPatient from './components/RegisterPatient';
 
 export default function App() {
+
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  axios.defaults.headers.common['X-CSRFToken'] = getCookie('csrftoken');
 
   return (
     <div className="">
@@ -23,6 +42,7 @@ export default function App() {
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path='/login/' element={<Login />} />
+          <Route path='/register/' element={<RegisterPatient />} />
           <Route path='/patient/:patient_id/profile/' element={<PatientView />} />
           <Route path='/:user/:id/appointmentdoctor/:doctor_id/' element={<AppointmentDoctor />} />
           <Route path='/doctor/:doctor_id/profile/' element={<DoctorView />} />

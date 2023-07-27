@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -168,7 +169,9 @@ def getAdminsInfo(request, pk):
     serializer = AdminSerializer(admin)
     return Response(serializer.data)
 
+
 #---------------------------------------------------------------Add POST views-----------------------------------------------------------
+
 
 @api_view(['POST'])
 @permission_classes([])
@@ -178,6 +181,7 @@ def addAppointment(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
 
 @api_view(['POST'])
 @permission_classes([])
@@ -198,7 +202,42 @@ def addDoctor(request):
     return Response(serializer.data, status=201)
 
 
+@api_view(['POST'])
+@permission_classes([])
+def registerPatient(request):
+    patient_data = {
+        'name': request.data.get('name'),
+        'email': request.data.get('email'),
+        'phone': request.data.get('phone'),
+        'age': request.data.get('age'),
+        'address': request.data.get('address'),
+    }
+    patient_serializer = RegisterPatientSerializer(data=patient_data)
+    user_serializer = RegisterUserSerializer(data={
+        'username': request.data.get('username'),
+        'password': request.data.get('password'),
+    })
+
+    if patient_serializer.is_valid() and user_serializer.is_valid():
+        user = user_serializer.save()
+
+        patient_group = Group.objects.get(name='patient')
+        user.groups.add(patient_group)
+
+        patient = patient_serializer.save(user=user)
+
+        return Response({
+            'patient_id': patient.id,
+            'message': 'Patient and linked user created successfully.',
+        }, status=status.HTTP_201_CREATED)
+    else:
+        return Response({
+            'error': 'Invalid data provided.',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 #---------------------------------------------------------------Update PUT views-----------------------------------------------------------
+
 
 @api_view(['PUT'])
 @permission_classes([])
