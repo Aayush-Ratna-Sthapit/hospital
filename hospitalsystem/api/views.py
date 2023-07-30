@@ -14,7 +14,8 @@ from .serializer import *
 
 # Create your views here.
 
-#------------------------------------------------------------login views -----------------------------------------------------------------
+# ------------------------------------------------------------login views -----------------------------------------------------------------
+
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -28,7 +29,7 @@ def obtain_token(request):
         return Response({'error': 'Invalid credentials'}, status=400)
 
     token, created = Token.objects.get_or_create(user=user)
-    
+
     groups = user.groups.all()
     group_names = [group.name for group in groups]
 
@@ -50,7 +51,8 @@ def user_details(request):
     data = serializer.data
     return Response(data)
 
-#----------------------------------------------------------display GET views------------------------------------------------------------
+# ----------------------------------------------------------display GET views------------------------------------------------------------
+
 
 @api_view(['GET'])
 @permission_classes([])
@@ -170,7 +172,7 @@ def getAdminsInfo(request, pk):
     return Response(serializer.data)
 
 
-#---------------------------------------------------------------Add POST views-----------------------------------------------------------
+# ---------------------------------------------------------------Add POST views-----------------------------------------------------------
 
 
 @api_view(['POST'])
@@ -187,45 +189,56 @@ def addAppointment(request):
 @permission_classes([])
 def addDoctor(request):
     data = request.data
-    department_id = data.pop('department_id')
-    department = Department.objects.get(id=department_id)
-    
+
     username = data['name'].replace(" ", "").lower()
     password = data.pop('password', 'hospitaluser')
+
     user = User.objects.create_user(username=username, password=password)
-    user.groups.add(doctor)
+    doctor_group, _ = Group.objects.get_or_create(name='doctor')
+    user.groups.add(doctor_group)
     user.save()
+    
+    next_doctor_id = Doctor.objects.last().id + 1
+    doctor_data = {
+        **data,
+        'id': next_doctor_id,
+    }
+    doctor_serializer = AddDoctorSerializer(data=doctor_data)
 
-    doctor = Doctor.objects.create(user=user, Department=department, **data)
-
-    serializer = DoctorSerializer(doctor)
-    return Response(serializer.data, status=201)
+    if doctor_serializer.is_valid():
+        doctor = doctor_serializer.save(user=user)
+        return Response({
+            'doctor_id': doctor.id,
+            'message': 'Doctor and linked user created successfully.',
+        }, status=status.HTTP_201_CREATED)
+    else:
+        return Response({
+            'error': 'Invalid data provided.',
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 @permission_classes([])
 def registerPatient(request):
+    data = request.data
+    username = data.pop('username')
+    password = data.pop('password', 'hospitaluser')
+    
+    next_patient_id = Patient.objects.last().id + 1
+    
+    user = User.objects.create_user(username=username, password=password)
+    patient_group, _ = Group.objects.get_or_create(name='patient')
+    user.groups.add(patient_group)
+    user.save()
+
     patient_data = {
-        'name': request.data.get('name'),
-        'email': request.data.get('email'),
-        'phone': request.data.get('phone'),
-        'age': request.data.get('age'),
-        'address': request.data.get('address'),
+        **data,
+        'id': next_patient_id,
     }
     patient_serializer = RegisterPatientSerializer(data=patient_data)
-    user_serializer = RegisterUserSerializer(data={
-        'username': request.data.get('username'),
-        'password': request.data.get('password'),
-    })
-
-    if patient_serializer.is_valid() and user_serializer.is_valid():
-        user = user_serializer.save()
-
-        patient_group = Group.objects.get(name='patient')
-        user.groups.add(patient_group)
-
+    
+    if patient_serializer.is_valid():
         patient = patient_serializer.save(user=user)
-
         return Response({
             'patient_id': patient.id,
             'message': 'Patient and linked user created successfully.',
@@ -236,7 +249,7 @@ def registerPatient(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-#---------------------------------------------------------------Update PUT views-----------------------------------------------------------
+# ---------------------------------------------------------------Update PUT views-----------------------------------------------------------
 
 
 @api_view(['PUT'])

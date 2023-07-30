@@ -4,10 +4,10 @@ import axios from 'axios';
 export default function AddNewDoctor({ onClose }) {
     const [formData, setFormData] = useState({
         name: '',
-        department_id: '',  // Changed from department_name to department_id
+        Department: '', 
         phone: '',
         email: '',
-        password: 'hospitaluser',  // Default password value
+        password: 'hospitaluser', 
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +33,8 @@ export default function AddNewDoctor({ onClose }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/doctors/add/', formData)
+        console.log(formData);
+        axios.post('http://localhost:8000/api/registerdoctors/', formData)
             .then((response) => {
                 console.log('New doctor added:', response.data);
                 onClose();
@@ -67,8 +68,8 @@ export default function AddNewDoctor({ onClose }) {
                                     <input type="text" id="name" name="name" className="form-control" value={formData.name} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="department_id">Department</label>
-                                    <select className="form-select" aria-label="Department Selector" name="department_id" value={formData.department_id} onChange={handleChange} required>
+                                    <label htmlFor="Department">Department</label>
+                                    <select className="form-select" aria-label="Department Selector" name="Department" value={formData.Department} onChange={handleChange} required>
                                         <option value=''>Select Department</option>
                                         {departments.map((department) => (
                                             <option key={department.id} value={department.id}>{department.name}</option>

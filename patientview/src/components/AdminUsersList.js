@@ -72,6 +72,26 @@ export default function AdminUsersList() {
 
     const handleCloseForm = () => {
         setShowForm(false);
+        if (selectedDepartment !== '') {
+            axios.get(`http://localhost:8000/api/departments/${selectedDepartment}/`)
+                .then((response) => {
+                    setDepartmentDoctors(response.data)
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+        else {
+            axios.get(`http://localhost:8000/api/doctors/`)
+                .then((response) => {
+                    setDepartmentDoctors(response.data)
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
     };
 
     const handleAddDoctor = (formData) => {

@@ -19,8 +19,9 @@ export default function RegisterPatient() {
 
     const handleRegister = (e) => {
         e.preventDefault();
+        console.log(patientData);
         try {
-            axios.post('http://localhost:8000/api/register/', patientData)
+            axios.post('http://localhost:8000/api/registerpatients/', patientData)
             .then((response) => {
                 console.log('New patient added:', response.data);
                 navigate(`/`);

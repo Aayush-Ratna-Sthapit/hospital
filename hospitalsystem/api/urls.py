@@ -6,9 +6,11 @@ urlpatterns = [
 
     path('doctors/', views.doctorsList, name='doctors'),
     path('doctors/<str:pk>/', views.getDoctorsInfo, name='doctors-info'),
+    path('registerdoctors/', views.addDoctor, name='add-doctor'),
 
     path('patients/', views.patientsList, name='patients'),
     path('patients/<str:pk>/', views.getPatientsInfo, name='patients-info'),
+    path('registerpatients/', views.registerPatient, name='register-patient'),
 
     path('admins/', views.adminsList, name='admins'),
     path('admins/<str:pk>/', views.getAdminsInfo, name='admins-info'),
@@ -25,5 +27,4 @@ urlpatterns = [
     path('token/', views.obtain_token, name='token_obtain'),
     path('token/verify/', views.verify_token, name='token_verify'),
     path('user/details/', views.user_details, name='user-details'),
-    path('register/', views.registerPatient, name='register-patient'),
 ]
