@@ -266,3 +266,18 @@ def completeAppointment(request, appointment_id):
             return Response({'error': 'Appointment status cannot be updated.'}, status=400)
     except Appointment.DoesNotExist:
         return Response({'error': 'Appointment not found.'}, status=404)
+    
+@api_view(['PUT'])
+@permission_classes([])
+def updateDoctor(request, pk):
+    try:
+        doctor = Doctor.objects.get(id=pk)
+    except Doctor.DoesNotExist:
+        return Response({'error': 'Doctor not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UpdateDoctorSerializer(doctor, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

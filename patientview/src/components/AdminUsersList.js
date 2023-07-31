@@ -95,32 +95,9 @@ export default function AdminUsersList() {
     };
 
     const handleAddDoctor = (formData) => {
-        console.log('New appointment data:', formData);
+        console.log('New Doctor data:', formData);
         setShowForm(false);
     };
-
-    const updateDoctors = () => {
-        if (selectedDepartment !== '') {
-            axios.get(`http://localhost:8000/api/departments/${selectedDepartment}/`)
-                .then((response) => {
-                    setDepartmentDoctors(response.data)
-                    console.log(response.data);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-        else {
-            axios.get(`http://localhost:8000/api/doctors/`)
-                .then((response) => {
-                    setDepartmentDoctors(response.data)
-                    console.log(response.data);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-      };
 
     return (
         <div>
@@ -179,7 +156,7 @@ export default function AdminUsersList() {
                                 <button type="button" className="btn btn-info my-1" onClick={handleShowForm} onSubmit={handleAddDoctor}>Add New Doctor</button>
                                 {showForm && (
                                     <div className="modal-background">
-                                        <AddNewDoctor onClose={handleCloseForm} onUpdateAppointments={updateDoctors} />
+                                        <AddNewDoctor onClose={handleCloseForm} />
                                     </div>
                                 )}
                                 <table className='table table-striped my-2'>

@@ -70,3 +70,8 @@ class RegisterPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ['id', 'name', 'email', 'phone', 'age', 'address', 'user']
+
+class UpdateDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = ['name', 'phone', 'email']
